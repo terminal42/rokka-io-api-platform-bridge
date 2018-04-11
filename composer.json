@@ -1,0 +1,26 @@
+{
+    "name": "terminal42/rokka-io-api-platform-bridge",
+    "description": "Provides collection and item providers, data persisters and more to easily integrate ApiPlatform and rokka.io",
+    "type": "symfony-bundle",
+    "require": {
+        "php": "^7.1",
+        "rokka/client-bundle": "^1.1",
+        "api-platform/core": "^2.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.11",
+        "leofeyer/optimize-native-functions-fixer": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Terminal42\\RokkaApiPlatformBridge\\": "src"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yanick Witschi",
+            "email": "yanick.witschi@terminal42.ch"
+        }
+    ]
+}

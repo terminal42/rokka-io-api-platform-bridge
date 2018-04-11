@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="api_platform.metadata.extractor.terminal42_rokka_image" class="Terminal42\RokkaApiPlatformBridge\Metadata\Extractor\ImageExtractor" public="false">
+            <argument /> <!-- Set by extension -->
+        </service>
+
+        <service id="api_platform.metadata.resource.name_collection_factory.terminal42_rokka_image" decorates="api_platform.metadata.resource.name_collection_factory" class="ApiPlatform\Core\Metadata\Resource\Factory\ExtractorResourceNameCollectionFactory" public="false">
+            <argument type="service" id="api_platform.metadata.extractor.terminal42_rokka_image" />
+            <argument type="service" id="api_platform.metadata.resource.name_collection_factory.terminal42_rokka_image.inner" />
+        </service>
+
+        <service id="api_platform.metadata.resource.metadata_factory.terminal42_rokka_image" decorates="api_platform.metadata.resource.metadata_factory" class="ApiPlatform\Core\Metadata\Resource\Factory\ExtractorResourceMetadataFactory" decoration-priority="40" public="false">
+            <argument type="service" id="api_platform.metadata.extractor.terminal42_rokka_image" />
+            <argument type="service" id="api_platform.metadata.resource.metadata_factory.terminal42_rokka_image.inner" />
+        </service>
+
+        <service id="api_platform.metadata.property.name_collection_factory.terminal42_rokka_image" class="ApiPlatform\Core\Metadata\Property\Factory\ExtractorPropertyNameCollectionFactory" decorates="api_platform.metadata.property.name_collection_factory" public="false">
+            <argument type="service" id="api_platform.metadata.extractor.terminal42_rokka_image" />
+            <argument type="service" id="api_platform.metadata.property.name_collection_factory.terminal42_rokka_image.inner" />
+        </service>
+
+        <service id="api_platform.metadata.property.metadata_factory.terminal42_rokka_image" class="ApiPlatform\Core\Metadata\Property\Factory\ExtractorPropertyMetadataFactory" decorates="api_platform.metadata.property.metadata_factory" decoration-priority="40" public="false">
+            <argument type="service" id="api_platform.metadata.extractor.terminal42_rokka_image" />
+            <argument type="service" id="api_platform.metadata.property.metadata_factory.terminal42_rokka_image.inner" />
+        </service>
+    </services>
+
+</container>

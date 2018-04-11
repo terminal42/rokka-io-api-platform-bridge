@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <class name="Terminal42\RokkaApiPlatformBridge\Entity\Image">
+        <property name="file">
+            <constraint name="Collection">
+                <option name="fields">
+                    <value key="content">
+                        <constraint name="NotBlank" />
+                    </value>
+                    <value key="name">
+                        <constraint name="NotBlank" />
+                    </value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+</constraint-mapping>
