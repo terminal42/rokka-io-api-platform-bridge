@@ -97,17 +97,15 @@ class Extractor
                 // Override path
                 $path = $this->bridgeEndpoint.$path;
 
-                // Describe the organization parameter and make it optional in case we have a default
+                if (null !== $this->defaultOrganization) {
+                    $path = str_replace('/{organization}', '', $path);
+                }
+
+                // Remove the organization parameter in case we have a default
                 foreach ((array) $config['parameters'] as $k => $parameter) {
                     if ('organization' === $parameter['name']) {
-                        $config['parameters'][$k]['description'] = 'You can create as many organizations as you like at rokka.io. You must provide the desired one here or configure a default organization.';
-
                         if (null !== $this->defaultOrganization) {
-                            $config['parameters'][$k]['description'] = sprintf(
-                                'You can create as many organizations as you like at rokka.io. You can optionally provide the desired one here. Default is "%s".',
-                                $this->defaultOrganization
-                            );
-                            $config['parameters'][$k]['required'] = false;
+                            unset($config['parameters'][$k]);
                         }
                     }
                 }
