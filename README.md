@@ -12,13 +12,22 @@ These are the main reasons:
 * Hide the API key of rokka.io behind your application
 * Use the same authentication mechanism that already protects your API to also protect rokka.io handling
 * Bring a consistent feeling to your API users
+* Automatically updates the Swagger docs based on the docs of rokka.io so it's always up to date
 
-It comes - as of today - with the following features:
+It works by simply bridging all the requests you make to the API to rokka.io by using the same path and enhancing it
+with the authorization header for rokka.io. By default it does that using the `/rokka` bridge endpoint but this can be
+configured.
 
-* Bridges the `/sourceimages` endpoint to a configurable path in your ApiPlatform instance. This allows you to upload,
-search and fetch image data as if you'd work with rokka.io directly. It also hides `organization` and normalizes the `link`
-attributes so that they match the configured path.
-* Full Swagger integration, automatically documenting the possibilities of the `/sourceimages` endpoint.
+Example: Let's say you want to create a new source image. In rokka.io that would be a `POST` request to
+`/sourceimages/{organization}`.
+So instead of sending a `POST` request to `https://api.rokka.io/sourceimages/{organization}` you would instead send
+a `POST` request to `https://myapi.com/rokka/sourceimages/{organization}`.
+
+Because you never want to expose the whole API for rokka.io (otherwise one could also modify your account),
+the allowed endpoints have to be configured (see Configuration step).
+
+Also, you can omit the whole `{organization}` part by configuring a `default_organization`, it will automatically
+use this one whenever you request anything.
 
 ## Installation
 
@@ -38,13 +47,29 @@ attributes so that they match the configured path.
         new Terminal42\RokkaApiPlatformBridge\RokkaApiPlatformBridgeBundle(),
     ];
     ```
-4. Optionally configure this bundle as shown in the Configuration step.
+    
+4. Add the route loader of this bundle to your routing configuration:
+
+
+```yaml
+# config/routes.yaml (or if you're still on SF 3: app/routing.yml)
+rokka_api_platform_bridge:
+    resource: .
+    type: rokka_api_platform_bridge
+```
+
+5. Configure this bundle as shown in the Configuration step.
 
 ## Configuration
 
 ```yaml
-terminal42_rokka_apiplatform_bridge:
-    sourceimage_endpoint: '/my_endpoint_for_rokka_images' # Default: '/images'
+rokka_api_platform_bridge:
+    api_key: '' # Required
+    bridge_endpoint: '/images' # Default: '/rokka'
+    default_organization: ~ # Default: null
+    endpoints:
+        - { path: '/sourceimages/{organization}', methods: ['POST'] }
+        - // etc.
 ```
 
 ## Roadmap / Ideas

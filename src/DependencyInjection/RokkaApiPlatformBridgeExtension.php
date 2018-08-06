@@ -17,6 +17,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Terminal42\RokkaApiPlatformBridge\Controller\RokkaController;
 
 class RokkaApiPlatformBridgeExtension extends Extension
 {
@@ -35,14 +36,14 @@ class RokkaApiPlatformBridgeExtension extends Extension
             new FileLocator(__DIR__.'/../Resources/config')
         );
 
-        $loader->load('services.xml');
-        $loader->load('meta.xml');
+        $container->setParameter('terminal42.rokka_apiplatform_bridge.bridge_endpoint', $config['bridge_endpoint']);
+        $container->setParameter('terminal42.rokka_apiplatform_bridge.default_organization', $config['default_organization']);
+        $container->setParameter('terminal42.rokka_apiplatform_bridge.endpoints', $config['endpoints']);
 
-        $definition = $container->getDefinition('terminal42.rokka_apiplatform_bridge.sourceimages_requestmatcher');
-        $definition->setArgument(0, $config['sourceimage_endpoint']);
-        $definition = $container->getDefinition('api_platform.metadata.extractor.terminal42_rokka_image');
-        $definition->setArgument(0, $config['sourceimage_endpoint']);
-        $definition = $container->getDefinition('Terminal42\RokkaApiPlatformBridge\Rokka\SourceImageNormalizer');
-        $definition->setArgument(0, $config['sourceimage_endpoint']);
+        $loader->load('services.xml');
+
+        // Set API key
+        $container->getDefinition(RokkaController::class)
+            ->setArgument(0, $config['api_key']);
     }
 }

@@ -24,18 +24,45 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('terminal42_rokka_apiplatform_bridge');
+        $rootNode = $treeBuilder->root('rokka_api_platform_bridge');
 
         $rootNode
             ->children()
-                ->scalarNode('sourceimage_endpoint')
-                    ->defaultValue('/images')
+                ->scalarNode('api_key')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('bridge_endpoint')
+                    ->defaultValue('/rokka')
                     ->validate()
-                        ->always(function ($sourceImage) {
-                            if ('/' !== $sourceImage[0]) {
-                                throw new \InvalidArgumentException('The configuration "sourceimage_endpoint" has to start with a "/".');
-                            }
+                        ->always(function ($bridgeEndpoint) {
+                            return '/' !== $bridgeEndpoint[0];
                         })
+                        ->thenInvalid('The configuration value of "bridge_endpoint" must start with a "/".')
+                    ->end()
+                ->end()
+                ->scalarNode('default_organization')
+                    ->defaultNull()
+                ->end()
+                ->arrayNode('endpoints')
+                    ->useAttributeAsKey('path')
+                    ->isRequired()
+                    ->requiresAtLeastOneElement()
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('path')
+                            ->end()
+                            ->arrayNode('methods')
+                                ->beforeNormalization()
+                                    ->castToArray()
+                                ->end()
+                                ->scalarPrototype()
+                                ->validate()
+                                    ->ifNotInArray(['GET', 'PUT', 'DELETE', 'POST', 'PATCH'])
+                                    ->thenInvalid('Invalid method "%s"')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end();
 

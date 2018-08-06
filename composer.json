@@ -4,12 +4,21 @@
     "type": "symfony-bundle",
     "require": {
         "php": "^7.1",
-        "rokka/client-bundle": "^1.1",
-        "api-platform/core": "^2.2"
+        "ext-json": "*",
+        "api-platform/core": "^2.3",
+        "symfony/config": "^4.0",
+        "symfony/dependency-injection": "^4.0",
+        "php-http/client-implementation": "^1.0",
+        "php-http/discovery": "^1.0",
+        "psr/http-message": "^1.0",
+        "php-http/message-factory": "^1.0",
+        "symfony/routing": "^4.1",
+        "symfony/psr-http-message-bridge": "^1.0",
+        "zendframework/zend-diactoros": "^1.8"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.11",
-        "leofeyer/optimize-native-functions-fixer": "^1.1"
+        "friendsofphp/php-cs-fixer": "^2.12",
+        "php-http/mock-client": "^1.0"
     },
     "autoload": {
         "psr-4": {

@@ -5,38 +5,30 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="terminal42.rokka_apiplatform_bridge.sourceimages_requestmatcher" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-            <argument /> <!-- Set by extension -->
+        <service id="Terminal42\RokkaApiPlatformBridge\Routing\RokkaLoader" public="false">
+            <argument>%terminal42.rokka_apiplatform_bridge.bridge_endpoint%</argument>
+            <argument>%terminal42.rokka_apiplatform_bridge.endpoints%</argument>
+            <argument>%terminal42.rokka_apiplatform_bridge.default_organization%</argument>
+            <tag name="routing.loader" />
         </service>
 
-        <service id="Terminal42\RokkaApiPlatformBridge\EventListener\PostReadAndWriteSourceImageListener" public="false">
-            <argument type="service" id="terminal42.rokka_apiplatform_bridge.sourceimages_requestmatcher" />
-            <argument type="service" id="Terminal42\RokkaApiPlatformBridge\Rokka\SourceImageNormalizer" />
-            <tag name="kernel.event_subscriber" />
+        <service id="Terminal42\RokkaApiPlatformBridge\Controller\RokkaController" public="true">
+            <argument /> <!-- api key -->
+            <argument>%terminal42.rokka_apiplatform_bridge.bridge_endpoint%</argument>
+            <argument>%terminal42.rokka_apiplatform_bridge.default_organization%</argument>
         </service>
 
-        <service id="Terminal42\RokkaApiPlatformBridge\Rokka\SourceImageNormalizer" public="false">
-            <argument /> <!-- Set by extension -->
+        <service id="Terminal42\RokkaApiPlatformBridge\Swagger\Extractor">
+            <argument type="service" id="cache.system" />
+            <argument>%terminal42.rokka_apiplatform_bridge.bridge_endpoint%</argument>
+            <argument>%terminal42.rokka_apiplatform_bridge.endpoints%</argument>
+            <argument>%terminal42.rokka_apiplatform_bridge.default_organization%</argument>
         </service>
 
-        <service id="Terminal42\RokkaApiPlatformBridge\Rokka\CollectionDataProvider" public="false">
-            <argument type="service" id="terminal42.rokka_apiplatform_bridge.sourceimages_requestmatcher" />
-            <argument type="service" id="request_stack" />
-            <argument type="service" id="rokka.client.image" />
-            <tag name="api_platform.collection_data_provider" />
-        </service>
-
-        <service id="Terminal42\RokkaApiPlatformBridge\Rokka\ItemDataProvider" public="false">
-            <argument type="service" id="terminal42.rokka_apiplatform_bridge.sourceimages_requestmatcher" />
-            <argument type="service" id="request_stack" />
-            <argument type="service" id="rokka.client.image" />
-            <tag name="api_platform.item_data_provider" />
-        </service>
-
-        <service id="Terminal42\RokkaApiPlatformBridge\Rokka\DataPersister" public="false">
-            <argument type="service" id="rokka.client.image" />
-            <tag name="api_platform.data_persister" />
+        <service id="Terminal42\RokkaApiPlatformBridge\Swagger\DocumentationNormalizer" decorates="api_platform.swagger.normalizer.documentation">
+            <argument type="service" id="Terminal42\RokkaApiPlatformBridge\Swagger\DocumentationNormalizer.inner" />
+            <argument type="service" id="Terminal42\RokkaApiPlatformBridge\Swagger\Extractor" />
+            <tag name="serializer.normalizer" priority="18" />
         </service>
     </services>
-    
 </container>
