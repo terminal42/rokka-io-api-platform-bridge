@@ -51,12 +51,11 @@ use this one whenever you request anything.
     ``` 
 
 2. Configure the [rokka.io Symfony Bundle as documented in their docs][4].
-3. Load the bundles in your kernel which is done automatically if you use Symfony Flex, otherwise use
+3. Load the bundle in your kernel which is done automatically if you use Symfony Flex, otherwise use
 
     ```php
     $bundles = [
         ...
-        new Rokka\RokkaClientBundle\RokkaClientBundle(),
         new Terminal42\RokkaApiPlatformBridge\RokkaApiPlatformBridgeBundle(),
     ];
     ```
