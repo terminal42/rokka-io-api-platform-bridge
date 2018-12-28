@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('bridge_endpoint')
                     ->defaultValue('/rokka')
                     ->validate()
-                        ->always(function ($bridgeEndpoint) {
+                        ->ifTrue(function ($bridgeEndpoint) {
                             return '/' !== $bridgeEndpoint[0];
                         })
                         ->thenInvalid('The configuration value of "bridge_endpoint" must start with a "/".')
