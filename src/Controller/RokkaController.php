@@ -101,7 +101,8 @@ class RokkaController
             }
         }
 
-        // Add API key header
+        // Add API headers
+        $request->headers->set('Api-Version', '1');
         $request->headers->set('Api-Key', $this->apiKey);
 
         // Ensure content-length is present

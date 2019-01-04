@@ -49,6 +49,7 @@ class RokkaControllerTest extends TestCase
             $this->createRequest('/images/sourceimages', '/sourceimages/{organization}', 'foobar-organization', 'POST', [], 'filedata'),
             function (ServerRequest $request) {
                 $this->assertSame([
+                    'api-version' => ['1'],
                     'api-key' => ['api-key'],
                     'content-length' => ['95'],
                     'Host' => ['api.rokka.io'],
