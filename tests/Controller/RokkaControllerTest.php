@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Terminal42\RokkaApiPlatformBridge\Test\Controller;
 
+use function GuzzleHttp\Psr7\stream_for;
 use Http\Client\HttpClient;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -39,8 +40,12 @@ class RokkaControllerTest extends TestCase
 
         $controller = new RokkaController('api-key', '/images', $client);
 
-        $this->assertSame(serialize($controller($request, 'foobar-organization')), serialize($expectedResponse)); // csfixer turns assertEquals() into assertSame()
-        //$this->assertEquals($controller($request, 'foobar-organization'), $expectedResponse);
+        $response = $controller($request, 'foobar-organization');
+
+        // Validate the most important things on the response
+        $this->assertSame($expectedResponse->getStatusCode(), $response->getStatusCode());
+        $this->assertSame($expectedResponse->headers->get('Content-Type'), $response->headers->get('Content-Type'));
+        $this->assertSame($expectedResponse->getContent(), $response->getContent());
     }
 
     public function controllerProvider()
@@ -68,8 +73,42 @@ class RokkaControllerTest extends TestCase
 
                 return true;
             },
-            new Psr7Response(),
-            (new Response())->setProtocolVersion('1.1'),
+            new Psr7Response(stream_for(json_encode(json_decode('{
+                "total": "1",
+                "items": [{
+                    "hash": "54e3938e63191e119d7bd9404dec6e44be469bda",
+                    "short_hash": "54e393",
+                    "binary_hash": "37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
+                    "created": "2019-01-04T12:15:26+00:00",
+                    "name": "phpXszLs3",
+                    "mimetype": "image\/png",
+                    "format": "png",
+                    "size": "85845",
+                    "width": "300",
+                    "height": "300",
+                    "organization": "foobar-organization",
+                    "link": "\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
+                    "deleted": ""
+                }]
+            }'))), 200, ['Content-Type' => 'application/json']),
+            new Response(json_encode(json_decode('{
+                "total": "1",
+                "items": [{
+                    "hash": "54e3938e63191e119d7bd9404dec6e44be469bda",
+                    "short_hash": "54e393",
+                    "binary_hash": "37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
+                    "created": "2019-01-04T12:15:26+00:00",
+                    "name": "phpXszLs3",
+                    "mimetype": "image\/png",
+                    "format": "png",
+                    "size": "85845",
+                    "width": "300",
+                    "height": "300",
+                    "organization": "foobar-organization",
+                    "link": "\/images\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
+                    "deleted": ""
+                }]
+            }')), 200, ['Content-Type' => 'application/json']),
         ];
     }
 
