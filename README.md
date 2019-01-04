@@ -1,7 +1,5 @@
 # rokka.io - ApiPlatform Bridge
 
-**THIS IS ALPHA SOFTWARE WITHOUT ANY TESTS, UNSTABLE AND A POC, DO NOT USE IN PRODUCTION! YOU HAVE BEEN WARNED!**
-
 Seamlessly integrates your [rokka.io][1] account with [ApiPlatform][2].
 
 ![Screenshot](docs/screenshot.png)
@@ -113,8 +111,6 @@ app.my_rokka_api_platform_bridge_service:
 
 ## Roadmap / Ideas
 
-* See how it goes :-D
-* Unit tests once the concept works out
 * Thumbnail endpoint to hide the rokka.io URL?
 * Your ideas?
 
