@@ -38,6 +38,7 @@ class RokkaApiPlatformBridgeExtension extends Extension
 
         $container->setParameter('terminal42.rokka_apiplatform_bridge.bridge_endpoint', $config['bridge_endpoint']);
         $container->setParameter('terminal42.rokka_apiplatform_bridge.default_organization', $config['default_organization']);
+        $container->setParameter('terminal42.rokka_apiplatform_bridge.http_client', $config['http_client']);
         $container->setParameter('terminal42.rokka_apiplatform_bridge.endpoints', $config['endpoints']);
 
         $loader->load('services.xml');
