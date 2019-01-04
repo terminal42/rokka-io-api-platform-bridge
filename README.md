@@ -74,13 +74,41 @@ use this one whenever you request anything.
 ## Configuration
 
 ```yaml
+# config/rokka_api_platform_bridge.yaml
 rokka_api_platform_bridge:
     api_key: '' # Required
     bridge_endpoint: '/images' # Default: '/rokka'
     default_organization: ~ # Default: null
+    http_client: ~ # Default: null
     endpoints:
         - { path: '/sourceimages/{organization}', methods: ['POST'] }
         - // etc.
+```
+
+## Custom Http Client
+
+You can pass a service id via `rokka_api_platform_bridge.http_client` which must be an instance of the PSR
+`Http\Client\HttpClient`. Thanks to this you can create your own instance that implements logging etc. or even reuse
+existing Symfony bundles such as the very popular [eightpoints/guzzle-bundle][6]. You only need to wrap the Guzzle
+client with the PSR compatible adapter you get using `php-http/guzzle6-adapter`. You can then configure the Guzzle
+service like so:
+
+```yaml
+# config/eight_points_guzzle.yaml
+eight_points_guzzle:
+    logging: true
+    profiling: true
+        rokka_api_platform_bridge: ~
+
+
+# config/rokka_api_platform_bridge.yaml
+rokka_api_platform_bridge:
+    http_client: 'app.my_rokka_api_platform_bridge_service'
+    
+# config/services.yaml
+app.my_rokka_api_platform_bridge_service:
+    class: Http\Adapter\Guzzle6\Client
+    arguments: ['@eight_points_guzzle.client.rokka_api_platform_bridge']
 ```
 
 ## Roadmap / Ideas
@@ -95,3 +123,4 @@ rokka_api_platform_bridge:
 [3]: https://getcomposer.org/
 [4]: https://github.com/rokka-io/rokka-client-bundle#configuration
 [5]: http://httplug.io/
+[6]: https://github.com/8p/EightPointsGuzzleBundle
