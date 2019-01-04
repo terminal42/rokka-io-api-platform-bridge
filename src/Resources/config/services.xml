@@ -15,7 +15,6 @@
         <service id="Terminal42\RokkaApiPlatformBridge\Controller\RokkaController" public="true">
             <argument /> <!-- api key -->
             <argument>%terminal42.rokka_apiplatform_bridge.bridge_endpoint%</argument>
-            <argument /> <!-- http client -->
         </service>
 
         <service id="Terminal42\RokkaApiPlatformBridge\Swagger\Extractor">
