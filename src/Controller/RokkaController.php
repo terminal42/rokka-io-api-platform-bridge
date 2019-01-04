@@ -55,6 +55,10 @@ class RokkaController
      */
     public function __invoke(Request $request, string $organization): Response
     {
+        // Clone the request because we're going to adjust it for our purposes but we don't want to affect
+        // the original one
+        $request = clone $request;
+
         $psr7Factory = new DiactorosFactory();
         $httpFoundationFactory = new HttpFoundationFactory();
 
