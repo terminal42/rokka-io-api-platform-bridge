@@ -17,6 +17,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Terminal42\RokkaApiPlatformBridge\Controller\RokkaController;
 
 class RokkaApiPlatformBridgeExtension extends Extension
@@ -38,13 +39,19 @@ class RokkaApiPlatformBridgeExtension extends Extension
 
         $container->setParameter('terminal42.rokka_apiplatform_bridge.bridge_endpoint', $config['bridge_endpoint']);
         $container->setParameter('terminal42.rokka_apiplatform_bridge.default_organization', $config['default_organization']);
-        $container->setParameter('terminal42.rokka_apiplatform_bridge.http_client', $config['http_client']);
         $container->setParameter('terminal42.rokka_apiplatform_bridge.endpoints', $config['endpoints']);
 
         $loader->load('services.xml');
 
+        $controllerDef = $container->getDefinition(RokkaController::class);
+
         // Set API key
-        $container->getDefinition(RokkaController::class)
-            ->setArgument(0, $config['api_key']);
+        $controllerDef->setArgument(0, $config['api_key']);
+
+        // Set Http Client
+        if ($config['http_client']) {
+            $controllerDef->setArgument(2, new Reference($config['http_client']));
+        }
+
     }
 }
