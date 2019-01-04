@@ -15,13 +15,13 @@ namespace Terminal42\RokkaApiPlatformBridge\Test\Controller;
 
 use Http\Client\HttpClient;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Terminal42\RokkaApiPlatformBridge\Controller\RokkaController;
 use Zend\Diactoros\Response as Psr7Response;
-use Zend\Diactoros\ServerRequest;
 
 class RokkaControllerTest extends TestCase
 {
@@ -47,24 +47,24 @@ class RokkaControllerTest extends TestCase
     {
         yield 'Test creating a new source image' => [
             $this->createRequest('/images/sourceimages', '/sourceimages/{organization}', 'foobar-organization', 'POST', [], 'filedata'),
-            function (ServerRequest $request) {
-                $this->assertSame([
-                    'api-version' => ['1'],
-                    'api-key' => ['api-key'],
-                    'content-length' => ['95'],
-                    'Host' => ['api.rokka.io'],
-                ], $request->getHeaders());
+            function (RequestInterface $request) {
+                // Make sure we only have the headers we want to
+                $this->assertCount(4, array_keys($request->getHeaders()));
+
+                // Assert header contents
+                $this->assertSame('1', $request->getHeaderLine('api-version'));
+                $this->assertSame('api-key', $request->getHeaderLine('api-key'));
+                $this->assertSame('api.rokka.io', $request->getHeaderLine('Host'));
+                $this->assertStringStartsWith('multipart/form-data; charset=utf-8; boundary=', $request->getHeaderLine('Content-Type'));
 
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('https://api.rokka.io/sourceimages/foobar-organization', (string) $request->getUri());
-                $this->assertArrayHasKey('filedata', $request->getUploadedFiles());
 
-                /** @var \Zend\Diactoros\UploadedFile $upload */
-                $upload = $request->getUploadedFiles()['filedata'];
+                $body = (string) $request->getBody();
 
-                $this->assertSame('pixel.png', $upload->getClientFilename());
-                $this->assertSame('image/png', $upload->getClientMediaType());
-                $this->assertSame(95, $upload->getSize());
+                $this->assertContains('Content-Disposition: form-data; name="pixel.png"; filename="pixel.png"', $body);
+                $this->assertContains('Content-Length: 95', $body);
+                $this->assertContains('Content-Type: image/png', $body);
 
                 return true;
             },

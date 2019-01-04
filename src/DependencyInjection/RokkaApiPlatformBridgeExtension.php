@@ -52,6 +52,5 @@ class RokkaApiPlatformBridgeExtension extends Extension
         if ($config['http_client']) {
             $controllerDef->setArgument(2, new Reference($config['http_client']));
         }
-
     }
 }

@@ -14,7 +14,8 @@
         "php-http/message-factory": "^1.0",
         "symfony/routing": "^4.1",
         "symfony/psr-http-message-bridge": "^1.0",
-        "zendframework/zend-diactoros": "^1.8"
+        "zendframework/zend-diactoros": "^1.8",
+        "guzzlehttp/psr7": "^1.5"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.12",

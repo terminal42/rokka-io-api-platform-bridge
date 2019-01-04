@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Terminal42\RokkaApiPlatformBridge\Controller;
 
+use GuzzleHttp\Psr7\MultipartStream;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,8 +66,8 @@ class RokkaController
 
         $psrRequest = $psr7Factory->createRequest($request);
 
-        // Override URI
-        $psrRequest = $psrRequest->withUri(new Uri('https://api.rokka.io'.$rokkaPath));
+        // Prepare PSR-7 request
+        $this->prepareRequest($psrRequest, $rokkaPath);
 
         // Send the request
         $psrResponse = $this->client->sendRequest($psrRequest);
@@ -76,6 +78,32 @@ class RokkaController
         $this->normalizeResponse($response, $rokkaPath);
 
         return $response;
+    }
+
+    private function prepareRequest(ServerRequestInterface &$psrRequest, string $rokkaPath)
+    {
+        // Override URI
+        $psrRequest = $psrRequest->withUri(new Uri('https://api.rokka.io'.$rokkaPath));
+
+        // Set body if we had file uploads
+        /** @var UploadedFileInterface[] $uploadedFiles */
+        $uploadedFiles = $psrRequest->getUploadedFiles();
+
+        if (0 === \count($uploadedFiles)) {
+            return;
+        }
+
+        foreach ($uploadedFiles as $file) {
+            $multipartElements[] = [
+                'name' => $file->getClientFilename(),
+                'contents' => $file->getStream(),
+            ];
+        }
+
+        $multipart = new MultipartStream($multipartElements);
+
+        $psrRequest = $psrRequest->withAddedHeader('Content-Type', 'multipart/form-data; charset=utf-8; boundary='.$multipart->getBoundary());
+        $psrRequest = $psrRequest->withBody($multipart);
     }
 
     /**
@@ -104,22 +132,6 @@ class RokkaController
         // Add API headers
         $request->headers->set('Api-Version', '1');
         $request->headers->set('Api-Key', $this->apiKey);
-
-        // Ensure content-length is present
-        if (!$request->headers->has('Content-Length')) {
-            if ('' !== $request->getContent()) {
-                $request->headers->set('Content-Length', \strlen($request->getContent()));
-            } elseif ($request->files->count()) {
-                $length = 0;
-                /** @var UploadedFile $file */
-                foreach ($request->files->all() as $file) {
-                    $length += $file->getSize();
-                }
-                $request->headers->set('Content-Length', $length);
-            } else {
-                $request->headers->set('Content-Length', '0');
-            }
-        }
 
         // Remove attributes
         $request->attributes = new ParameterBag();
