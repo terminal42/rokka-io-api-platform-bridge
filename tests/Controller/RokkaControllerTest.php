@@ -51,16 +51,16 @@ class RokkaControllerTest extends TestCase
     public function controllerProvider()
     {
         yield 'Test creating a new source image' => [
-            $this->createRequest('/images/sourceimages', '/sourceimages/{organization}', 'foobar-organization', 'POST', [], 'filedata'),
+            $this->createRequest('/images/sourceimages', '/sourceimages/{organization}', 'foobar-organization', 'POST', ['Foobar' => 'We do not care about this'], 'filedata'),
             function (RequestInterface $request) {
                 // Make sure we only have the headers we want to
-                $this->assertCount(4, array_keys($request->getHeaders()));
+                $this->assertCount(6, array_keys($request->getHeaders()));
 
                 // Assert header contents
                 $this->assertSame('1', $request->getHeaderLine('api-version'));
                 $this->assertSame('api-key', $request->getHeaderLine('api-key'));
                 $this->assertSame('api.rokka.io', $request->getHeaderLine('Host'));
-                $this->assertStringStartsWith('multipart/form-data; charset=utf-8; boundary=', $request->getHeaderLine('Content-Type'));
+                $this->assertContains('multipart/form-data; charset=utf-8; boundary=', $request->getHeaderLine('Content-Type'));
 
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('https://api.rokka.io/sourceimages/foobar-organization', (string) $request->getUri());

@@ -121,10 +121,10 @@ class RokkaController
 
         // Only allow whitelisted headers
         $headerWhitelist = [
-            'User-Agent',
-            'Accept',
-            'Content-Type',
-            'Content-Length',
+            'user-agent',
+            'accept',
+            'content-type',
+            'content-length',
         ];
 
         foreach (array_keys($request->headers->all()) as $header) {
@@ -134,8 +134,8 @@ class RokkaController
         }
 
         // Add API headers
-        $request->headers->set('Api-Version', '1');
-        $request->headers->set('Api-Key', $this->apiKey);
+        $request->headers->set('api-version', '1');
+        $request->headers->set('api-key', $this->apiKey);
 
         // Remove attributes
         $request->attributes = new ParameterBag();
