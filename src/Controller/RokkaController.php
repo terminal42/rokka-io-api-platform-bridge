@@ -150,7 +150,7 @@ class RokkaController
         if ('application/json' === $response->headers->get('Content-Type')) {
             $content = json_decode($response->getContent(), true);
             $content = $this->recursiveReplaceLinks($content, $rokkaPath);
-            $response = new JsonResponse($content);
+            $response = new JsonResponse($content, $response->getStatusCode(), $response->headers->all());
         }
     }
 

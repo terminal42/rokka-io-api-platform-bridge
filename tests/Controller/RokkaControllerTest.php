@@ -44,7 +44,7 @@ class RokkaControllerTest extends TestCase
 
         // Validate the most important things on the response
         $this->assertSame($expectedResponse->getStatusCode(), $response->getStatusCode());
-        $this->assertSame($expectedResponse->headers->get('Content-Type'), $response->headers->get('Content-Type'));
+        $this->assertSame($expectedResponse->headers->all(), $response->headers->all());
         $this->assertSame($expectedResponse->getContent(), $response->getContent());
     }
 
@@ -110,6 +110,19 @@ class RokkaControllerTest extends TestCase
                     "deleted": ""
                 }]
             }')), 200, ['Content-Type' => 'application/json']),
+        ];
+
+        yield 'Invalid request' => [
+            $this->createRequest('/images/sourceimages', '/sourceimages/{organization}', 'foobar-organization', 'POST', [], 'filedata'),
+            function () { return true; },
+            new Psr7Response(stream_for(json_encode(json_decode('{
+                "code": "400",
+                "message": "Something went wrong"
+            }'))), 400, ['Content-Type' => 'application/json']),
+            new Response(json_encode(json_decode('{
+                "code": "400",
+                "message": "Something went wrong"
+            }')), 400, ['Content-Type' => 'application/json']),
         ];
     }
 
