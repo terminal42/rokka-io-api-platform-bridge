@@ -106,7 +106,7 @@ class RokkaController
 
         $multipart = new MultipartStream($multipartElements);
 
-        $psrRequest = $psrRequest->withAddedHeader('Content-Type', 'multipart/form-data; charset=utf-8; boundary='.$multipart->getBoundary());
+        $psrRequest = $psrRequest->withHeader('Content-Type', 'multipart/form-data; charset=utf-8; boundary='.$multipart->getBoundary());
         $psrRequest = $psrRequest->withBody($multipart);
     }
 
