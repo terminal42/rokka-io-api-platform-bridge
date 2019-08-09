@@ -151,6 +151,9 @@ class RokkaController
             $content = json_decode($response->getContent(), true);
             $content = $this->recursiveReplaceLinks($content, $rokkaPath);
             $response = new JsonResponse($content, $response->getStatusCode(), $response->headers->all());
+
+            // Update Content-Length header
+            $response->headers->set('Content-Length', \strlen($response->getContent()));
         }
     }
 

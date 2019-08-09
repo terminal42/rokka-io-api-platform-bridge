@@ -91,7 +91,7 @@ class RokkaControllerTest extends TestCase
                     "link": "\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
                     "deleted": ""
                 }]
-            }'))), 200, ['Content-Type' => 'application/json']),
+            }'))), 200, ['Content-Type' => 'application/json', 'Content-Length' => 579]),
             new Response(json_encode(json_decode('{
                 "total": "1",
                 "items": [{
@@ -109,7 +109,7 @@ class RokkaControllerTest extends TestCase
                     "link": "\/images\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
                     "deleted": ""
                 }]
-            }')), 200, ['Content-Type' => 'application/json']),
+            }')), 200, ['Content-Type' => 'application/json', 'Content-Length' => 439]),
         ];
 
         yield 'Invalid request' => [
@@ -118,11 +118,11 @@ class RokkaControllerTest extends TestCase
             new Psr7Response(stream_for(json_encode(json_decode('{
                 "code": "400",
                 "message": "Something went wrong"
-            }'))), 400, ['Content-Type' => 'application/json']),
+            }'))), 400, ['Content-Type' => 'application/json', 'Content-Length' => 60]),
             new Response(json_encode(json_decode('{
                 "code": "400",
                 "message": "Something went wrong"
-            }')), 400, ['Content-Type' => 'application/json']),
+            }')), 400, ['Content-Type' => 'application/json', 'Content-Length' => 47]),
         ];
     }
 
