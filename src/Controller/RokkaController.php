@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * terminal42/rokka-io-api-platform-bridge
  *
- * @copyright  Copyright (c) 2008-2019, terminal42 gmbh
+ * @copyright  Copyright (c) 2008-2020, terminal42 gmbh
  * @author     terminal42 gmbh <info@terminal42.ch>
  * @license    MIT
  * @link       http://github.com/terminal42/rokka-io-api-platform-bridge
@@ -84,7 +84,7 @@ class RokkaController
         return $response;
     }
 
-    private function prepareRequest(ServerRequestInterface &$psrRequest, string $rokkaPath)
+    private function prepareRequest(ServerRequestInterface &$psrRequest, string $rokkaPath): void
     {
         // Override URI
         $psrRequest = $psrRequest->withUri(new Uri('https://api.rokka.io'.$rokkaPath));
@@ -114,7 +114,7 @@ class RokkaController
      * Normalizes the request in a way it does not expose useless information from the client to the
      * rokka.io servers (e.g. authentication details) and provides the api key.
      */
-    private function normalizeRequest(Request $request)
+    private function normalizeRequest(Request $request): void
     {
         // Remove cookies
         $request->cookies = new ParameterBag();
@@ -145,7 +145,7 @@ class RokkaController
      * Normalizes the response, meaning it searches for links and automatically prefixes them with the bridge
      * endpoint so for the end user this feels like a natural API endpoint.
      */
-    private function normalizeResponse(Response &$response, string $rokkaPath)
+    private function normalizeResponse(Response &$response, string $rokkaPath): void
     {
         if ('application/json' === $response->headers->get('Content-Type')) {
             $content = json_decode($response->getContent(), true);
