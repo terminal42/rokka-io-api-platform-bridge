@@ -20,6 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -141,12 +142,32 @@ class RokkaController
         $request->attributes = new ParameterBag();
     }
 
+    private function removeHopByHopHeaders(HeaderBag $headerBag): void
+    {
+        $hopByHopHeaders = [
+            'connection',
+            'keep-alive',
+            'proxy-authenticate',
+            'proxy-authorization',
+            'te',
+            'trailer',
+            'transfer-encoding',
+            'upgrade',
+        ];
+
+        foreach ($hopByHopHeaders as $header) {
+            $headerBag->remove($header);
+        }
+    }
+
     /**
      * Normalizes the response, meaning it searches for links and automatically prefixes them with the bridge
      * endpoint so for the end user this feels like a natural API endpoint.
      */
     private function normalizeResponse(Response &$response, string $rokkaPath): void
     {
+        $this->removeHopByHopHeaders($response->headers);
+
         if ('application/json' === $response->headers->get('Content-Type')) {
             $content = json_decode($response->getContent(), true);
             $content = $this->recursiveReplaceLinks($content, $rokkaPath);

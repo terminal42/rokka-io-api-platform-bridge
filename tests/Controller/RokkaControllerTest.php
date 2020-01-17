@@ -91,7 +91,7 @@ class RokkaControllerTest extends TestCase
                     "link": "\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
                     "deleted": ""
                 }]
-            }'))), 200, ['Content-Type' => 'application/json', 'Content-Length' => 579]),
+            }'))), 200, ['Content-Type' => 'application/json', 'Content-Length' => 579, 'Transfer-Encoding' => 'chunked', 'Keep-Alive' => 'timeout=5, max=1000']),
             new Response(json_encode(json_decode('{
                 "total": "1",
                 "items": [{
