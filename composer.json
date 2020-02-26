@@ -14,7 +14,7 @@
         "php-http/message-factory": "^1.0",
         "symfony/routing": "^4.1",
         "symfony/psr-http-message-bridge": "^1.0",
-        "zendframework/zend-diactoros": "^1.8",
+        "laminas/laminas-diactoros": "^2.2",
         "guzzlehttp/psr7": "^1.5"
     },
     "require-dev": {

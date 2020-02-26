@@ -16,6 +16,7 @@ namespace Terminal42\RokkaApiPlatformBridge\Controller;
 use GuzzleHttp\Psr7\MultipartStream;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
+use Laminas\Diactoros\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -25,7 +26,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Zend\Diactoros\Uri;
 
 class RokkaController
 {

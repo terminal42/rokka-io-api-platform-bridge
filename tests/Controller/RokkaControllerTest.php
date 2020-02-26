@@ -15,6 +15,7 @@ namespace Terminal42\RokkaApiPlatformBridge\Test\Controller;
 
 use function GuzzleHttp\Psr7\stream_for;
 use Http\Client\HttpClient;
+use Laminas\Diactoros\Response as Psr7Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +23,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Terminal42\RokkaApiPlatformBridge\Controller\RokkaController;
-use Zend\Diactoros\Response as Psr7Response;
 
 class RokkaControllerTest extends TestCase
 {
