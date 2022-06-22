@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * terminal42/rokka-io-api-platform-bridge
  *
- * @copyright  Copyright (c) 2008-2020, terminal42 gmbh
+ * @copyright  Copyright (c) 2008-2022, terminal42 gmbh
  * @author     terminal42 gmbh <info@terminal42.ch>
  * @license    MIT
  * @link       http://github.com/terminal42/rokka-io-api-platform-bridge
@@ -27,7 +27,7 @@ class RokkaApiPlatformBridgeExtension extends Extension
      *
      * @throws \InvalidArgumentException When provided tag is not defined in this extension
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);

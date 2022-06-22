@@ -45,7 +45,7 @@ use this one whenever you request anything.
     E.g. if you want to use `Guzzle`, install the bundle like so:
     
     ```
-    $ composer require terminal42/rokka-io-api-platform-bridge guzzlehttp/psr7 php-http/guzzle6-adapter php-http/message
+    $ composer require terminal42/rokka-io-api-platform-bridge php-http/guzzle6-adapter php-http/message
     ``` 
 
 2. Configure the [rokka.io Symfony Bundle as documented in their docs][4].

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * terminal42/rokka-io-api-platform-bridge
  *
- * @copyright  Copyright (c) 2008-2020, terminal42 gmbh
+ * @copyright  Copyright (c) 2008-2022, terminal42 gmbh
  * @author     terminal42 gmbh <info@terminal42.ch>
  * @license    MIT
  * @link       http://github.com/terminal42/rokka-io-api-platform-bridge
@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace Terminal42\RokkaApiPlatformBridge\Test\Controller;
 
-use function GuzzleHttp\Psr7\stream_for;
 use Http\Client\HttpClient;
-use Laminas\Diactoros\Response as Psr7Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -29,7 +27,7 @@ class RokkaControllerTest extends TestCase
     /**
      * @dataProvider controllerProvider
      */
-    public function testController(Request $request, callable $expectedRequestValidator, ResponseInterface $mockedResponse, Response $expectedResponse)
+    public function testController(Request $request, callable $expectedRequestValidator, ResponseInterface $mockedResponse, Response $expectedResponse): void
     {
         $client = $this->createMock(HttpClient::class);
         $client
@@ -60,21 +58,22 @@ class RokkaControllerTest extends TestCase
                 $this->assertSame('1', $request->getHeaderLine('api-version'));
                 $this->assertSame('api-key', $request->getHeaderLine('api-key'));
                 $this->assertSame('api.rokka.io', $request->getHeaderLine('Host'));
-                $this->assertContains('multipart/form-data; charset=utf-8; boundary=', $request->getHeaderLine('Content-Type'));
-                $this->assertNotContains('multipart/form-data; charset=utf-8; boundary=foobar', $request->getHeaderLine('Content-Type'));
+
+                $this->assertStringContainsString('multipart/form-data; charset=utf-8; boundary=', $request->getHeaderLine('Content-Type'));
+                $this->assertStringNotContainsString('multipart/form-data; charset=utf-8; boundary=foobar', $request->getHeaderLine('Content-Type'));
 
                 $this->assertSame('POST', $request->getMethod());
                 $this->assertSame('https://api.rokka.io/sourceimages/foobar-organization', (string) $request->getUri());
 
                 $body = (string) $request->getBody();
 
-                $this->assertContains('Content-Disposition: form-data; name="pixel.png"; filename="pixel.png"', $body);
-                $this->assertContains('Content-Length: 95', $body);
-                $this->assertContains('Content-Type: image/png', $body);
+                $this->assertStringContainsString('Content-Disposition: form-data; name="pixel.png"; filename="pixel.png"', $body);
+                $this->assertStringContainsString('Content-Length: 95', $body);
+                $this->assertStringContainsString('Content-Type: image/png', $body);
 
                 return true;
             },
-            new Psr7Response(stream_for(json_encode(json_decode('{
+            new \GuzzleHttp\Psr7\Response(200, ['Content-Type' => 'application/json', 'Content-Length' => 579, 'Transfer-Encoding' => 'chunked', 'Keep-Alive' => 'timeout=5, max=1000'], json_encode(json_decode('{
                 "total": "1",
                 "items": [{
                     "hash": "54e3938e63191e119d7bd9404dec6e44be469bda",
@@ -91,7 +90,7 @@ class RokkaControllerTest extends TestCase
                     "link": "\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
                     "deleted": ""
                 }]
-            }'))), 200, ['Content-Type' => 'application/json', 'Content-Length' => 579, 'Transfer-Encoding' => 'chunked', 'Keep-Alive' => 'timeout=5, max=1000']),
+            }'))),
             new Response(json_encode(json_decode('{
                 "total": "1",
                 "items": [{
@@ -109,20 +108,20 @@ class RokkaControllerTest extends TestCase
                     "link": "\/images\/sourceimages\/foobar-organization\/37ebc95296615ac24ebebd7fcc35ebce4f8a7582",
                     "deleted": ""
                 }]
-            }')), 200, ['Content-Type' => 'application/json', 'Content-Length' => 439]),
+            }')), 200, ['Content-Type' => 'application/json', 'Content-Length' => '439']),
         ];
 
         yield 'Invalid request' => [
             $this->createRequest('/images/sourceimages', '/sourceimages/{organization}', 'foobar-organization', 'POST', [], 'filedata'),
             function () { return true; },
-            new Psr7Response(stream_for(json_encode(json_decode('{
+            new \GuzzleHttp\Psr7\Response(400, ['Content-Type' => 'application/json', 'Content-Length' => 60], json_encode(json_decode('{
                 "code": "400",
                 "message": "Something went wrong"
-            }'))), 400, ['Content-Type' => 'application/json', 'Content-Length' => 60]),
+            }'))),
             new Response(json_encode(json_decode('{
                 "code": "400",
                 "message": "Something went wrong"
-            }')), 400, ['Content-Type' => 'application/json', 'Content-Length' => 47]),
+            }')), 400, ['Content-Type' => 'application/json', 'Content-Length' => '47']),
         ];
     }
 
