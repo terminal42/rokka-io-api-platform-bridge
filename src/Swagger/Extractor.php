@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * terminal42/rokka-io-api-platform-bridge
  *
- * @copyright  Copyright (c) 2008-2020, terminal42 gmbh
+ * @copyright  Copyright (c) 2008-2022, terminal42 gmbh
  * @author     terminal42 gmbh <info@terminal42.ch>
  * @license    MIT
  * @link       http://github.com/terminal42/rokka-io-api-platform-bridge
@@ -63,7 +63,7 @@ class Extractor
         $this->messageFactory = $messageFactory ?? MessageFactoryDiscovery::find();
     }
 
-    public function mergeWithExistingSwaggerDocs(array &$docs)
+    public function mergeWithExistingSwaggerDocs(array &$docs): void
     {
         // Only supports Swagger 2.0
         if (!isset($docs['swagger']) || '2.0' !== $docs['swagger']) {
@@ -81,7 +81,7 @@ class Extractor
                 );
 
                 $swaggerDocs = $response->getBody()->getContents();
-            } catch (Exception | \Exception $e) {
+            } catch (Exception|\Exception $e) {
                 return;
             }
         }

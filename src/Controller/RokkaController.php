@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * terminal42/rokka-io-api-platform-bridge
  *
- * @copyright  Copyright (c) 2008-2020, terminal42 gmbh
+ * @copyright  Copyright (c) 2008-2022, terminal42 gmbh
  * @author     terminal42 gmbh <info@terminal42.ch>
  * @license    MIT
  * @link       http://github.com/terminal42/rokka-io-api-platform-bridge
@@ -16,11 +16,12 @@ namespace Terminal42\RokkaApiPlatformBridge\Controller;
 use GuzzleHttp\Psr7\MultipartStream;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
-use Laminas\Diactoros\Uri;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -60,7 +61,8 @@ class RokkaController
         // the original one
         $request = clone $request;
 
-        $psr7Factory = new DiactorosFactory();
+        $psr17Factory = new Psr17Factory();
+        $psrHttpFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
         $httpFoundationFactory = new HttpFoundationFactory();
 
         // Extract rokka.io path from attributes
@@ -69,7 +71,7 @@ class RokkaController
         // Normalize request
         $this->normalizeRequest($request);
 
-        $psrRequest = $psr7Factory->createRequest($request);
+        $psrRequest = $psrHttpFactory->createRequest($request);
 
         // Prepare PSR-7 request
         $this->prepareRequest($psrRequest, $rokkaPath);
@@ -174,7 +176,7 @@ class RokkaController
             $response = new JsonResponse($content, $response->getStatusCode(), $response->headers->all());
 
             // Update Content-Length header
-            $response->headers->set('Content-Length', \strlen($response->getContent()));
+            $response->headers->set('Content-Length', (string) \strlen($response->getContent()));
         }
     }
 
