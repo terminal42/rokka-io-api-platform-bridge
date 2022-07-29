@@ -188,7 +188,7 @@ class RokkaController
             } else {
                 $content[$k] = preg_replace('@^'.preg_quote($rokkaPath, '@').'@',
                     $this->bridgeEndpoint.$rokkaPath,
-                    $v
+                    (string) $v
                 );
             }
         }
